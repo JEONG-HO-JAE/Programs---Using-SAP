@@ -1,0 +1,96 @@
+*&---------------------------------------------------------------------*
+*&  Include           ZABAP_31_101_O01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE status_0100 OUTPUT.
+SET PF-STATUS 'S100'.
+  SET TITLEBAR 'T100'.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  CLEAR_OK_CODE  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE clear_ok_code OUTPUT.
+  CLEAR: OK_CODE.
+ENDMODULE.
+*&---------------------------------------------------------------------*
+*&      Module  INIT_ALV  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE init_alv OUTPUT.
+
+  IF GO_CONT IS INITIAL.
+    CREATE OBJECT GO_CONT
+      EXPORTING
+        CONTAINER_NAME              = 'AREA'
+      EXCEPTIONS
+        CNTL_ERROR                  = 1
+        CNTL_SYSTEM_ERROR           = 2
+        CREATE_ERROR                = 3
+        LIFETIME_ERROR              = 4
+        LIFETIME_DYNPRO_DYNPRO_LINK = 5
+        OTHERS                      = 6.
+    IF SY-SUBRC <> 0.
+*     MESSAGE ID SY-MSGID TYPE SY-MSGTY NUMBER SY-MSGNO
+*                WITH SY-MSGV1 SY-MSGV2 SY-MSGV3 SY-MSGV4.
+    ENDIF.
+
+    CREATE OBJECT GO_ALV
+      EXPORTING
+        I_PARENT          = GO_CONT
+      EXCEPTIONS
+        ERROR_CNTL_CREATE = 1
+        ERROR_CNTL_INIT   = 2
+        ERROR_CNTL_LINK   = 3
+        ERROR_DP_CREATE   = 4
+        OTHERS            = 5.
+    IF SY-SUBRC <> 0.
+*     MESSAGE ID SY-MSGID TYPE SY-MSGTY NUMBER SY-MSGNO
+*                WITH SY-MSGV1 SY-MSGV2 SY-MSGV3 SY-MSGV4.
+    ENDIF.
+*
+*   PERFORM SET_LAYOUT.
+  PERFORM SET_FCAT.
+
+    CALL METHOD GO_ALV->SET_TABLE_FOR_FIRST_DISPLAY
+      EXPORTING
+*       I_BUFFER_ACTIVE               =
+*       I_BYPASSING_BUFFER            =
+*       I_CONSISTENCY_CHECK           =
+        I_STRUCTURE_NAME              = 'ZCUSTOM_31'
+*       IS_VARIANT                    =
+*       I_SAVE                        =
+*       I_DEFAULT                     = 'X'
+      IS_LAYOUT                     = GS_LAYOUT
+*       IS_PRINT                      =
+*       IT_SPECIAL_GROUPS             =
+*       IT_TOOLBAR_EXCLUDING          =
+*       IT_HYPERLINK                  =
+*       IT_ALV_GRAPHICS               =
+*       IT_EXCEPT_QINFO               =
+*       IR_SALV_ADAPTER               =
+      CHANGING
+        IT_OUTTAB                     = GT_DATA
+        IT_FIELDCATALOG               = GT_FCAT
+*       IT_SORT                       =
+*       IT_FILTER                     =
+      EXCEPTIONS
+        INVALID_PARAMETER_COMBINATION = 1
+        PROGRAM_ERROR                 = 2
+        TOO_MANY_LINES                = 3
+        OTHERS                        = 4.
+    IF SY-SUBRC <> 0.
+*     Implement suitable error handling here
+    ENDIF.
+
+  ENDIF.
+ENDMODULE.
+
+----------------------------------------------------------------------------------
+Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2022. Sap Release 750

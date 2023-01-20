@@ -1,0 +1,59 @@
+METHOD set_id .
+
+  DATA lo_nd_nd_cond TYPE REF TO if_wd_context_node.
+
+  DATA lo_el_nd_cond TYPE REF TO if_wd_context_element.
+  DATA ls_nd_cond TYPE wd_this->element_nd_cond.
+  DATA lv_id TYPE wd_this->element_nd_cond-id.
+
+* navigate from <CONTEXT> to <ND_COND> via lead selection
+  lo_nd_nd_cond = wd_context->get_child_node( name = wd_this->wdctx_nd_cond ).
+
+* @TODO handle non existant child
+* IF lo_nd_nd_cond IS INITIAL.
+* ENDIF.
+
+* get element via lead selection
+  lo_el_nd_cond = lo_nd_nd_cond->get_element( ).
+
+* @TODO handle not set lead selection
+  IF lo_el_nd_cond IS INITIAL.
+  ENDIF.
+
+* @TODO fill attribute
+  lv_id = 31.
+
+* set single attribute
+  lo_el_nd_cond->set_attribute(
+    name =  `ID`
+    value = lv_id ).
+
+
+  DATA lo_nd_ns_custom TYPE REF TO if_wd_context_node.
+
+  DATA lo_el_ns_custom TYPE REF TO if_wd_context_element.
+  DATA ls_ns_custom TYPE wd_this->element_ns_custom.
+
+
+* navigate from <CONTEXT> to <NS_CUSTOM> via lead selection
+  lo_nd_ns_custom = wd_context->get_child_node( name = wd_this->wdctx_ns_custom ).
+
+* @TODO handle non existant child
+* IF lo_nd_ns_custom IS INITIAL.
+* ENDIF.
+
+* get element via lead selection
+  lo_el_ns_custom = lo_nd_ns_custom->get_element( ).
+
+* @TODO handle not set lead selection
+  IF lo_el_ns_custom IS INITIAL.
+  ENDIF.
+
+* @TODO fill attribute
+* lv_id = 1.
+
+* set single attribute
+  lo_el_ns_custom->set_attribute(
+    name =  `ID`
+    value = lv_id ).
+

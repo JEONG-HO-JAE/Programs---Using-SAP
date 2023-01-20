@@ -1,0 +1,83 @@
+method ONACTIONCLEARRE .
+     DATA lo_nd_nd_cond TYPE REF TO if_wd_context_node.
+
+      DATA lo_el_nd_cond TYPE REF TO if_wd_context_element.
+      DATA ls_nd_cond TYPE wd_this->element_nd_cond.
+
+*     navigate from <CONTEXT> to <ND_COND> via lead selection
+      lo_nd_nd_cond = wd_context->get_child_node( name = wd_this->wdctx_nd_cond ).
+
+*     @TODO handle non existant child
+*     IF lo_nd_nd_cond IS INITIAL.
+*     ENDIF.
+
+*     get element via lead selection
+      lo_el_nd_cond = lo_nd_nd_cond->get_element( ).
+
+*     @TODO handle not set lead selection
+      IF lo_el_nd_cond IS INITIAL.
+      ENDIF.
+
+*     @TODO fill static attributes
+*     ls_nd_cond = xxx->get_yyy( ).
+
+
+      clear ls_nd_cond.
+
+*     set all declared attributes
+      lo_el_nd_cond->set_static_attributes(
+         static_attributes = ls_nd_cond ).
+
+
+
+
+
+  DATA lo_nd_ns_custom TYPE REF TO if_wd_context_node.
+
+  DATA lo_el_ns_custom TYPE REF TO if_wd_context_element.
+  DATA ls_ns_custom TYPE wd_this->element_ns_custom.
+
+* navigate from <CONTEXT> to <NS_CUSTOM> via lead selection
+  lo_nd_ns_custom = wd_context->get_child_node( name = wd_this->wdctx_ns_custom ).
+
+* @TODO handle non existant child
+* IF lo_nd_ns_custom IS INITIAL.
+* ENDIF.
+
+* get element via lead selection
+  lo_el_ns_custom = lo_nd_ns_custom->get_element( ).
+
+* @TODO handle not set lead selection
+  IF lo_el_ns_custom IS INITIAL.
+  ENDIF.
+
+* @TODO fill static attributes
+* ls_ns_custom = xxx->get_yyy( ).
+CLEAR ls_ns_custom.
+* set all declared attributes
+  lo_el_ns_custom->set_static_attributes(
+     static_attributes = ls_ns_custom ).
+
+
+
+
+
+
+  DATA lo_nd_nt_book TYPE REF TO if_wd_context_node.
+
+  DATA lt_nt_book TYPE wd_this->elements_nt_book.
+
+* navigate from <CONTEXT> to <NT_BOOK> via lead selection
+  lo_nd_nt_book = wd_context->get_child_node( name = wd_this->wdctx_nt_book ).
+
+* @TODO handle non existant child
+* IF lo_nd_nt_book IS INITIAL.
+* ENDIF.
+
+** @TODO compute values
+** e.g. call a model function
+*
+
+  CLEAR lt_nt_book.
+  lo_nd_nt_book->bind_table( new_items = lt_nt_book set_initial_elements = abap_true ).
+endmethod.

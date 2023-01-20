@@ -1,0 +1,41 @@
+
+
+*&---------------------------------------------------------------------*
+*& Report ZABAP_31_101
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zabap_31_101.
+
+INCLUDE zabap_31_101_top.
+INCLUDE zabap_31_101_o01.
+INCLUDE zabap_31_101_i01.
+INCLUDE zabap_31_101_f01.
+
+
+INITIALIZATION.
+PERFORM get_scustom.
+
+START-OF-SELECTION.
+  PERFORM get_customer_info.
+
+START-OF-SELECTION.
+  CALL SCREEN 100.
+
+*GUI Texts
+*----------------------------------------------------------
+* T100 --> T100
+
+*Text elements
+*----------------------------------------------------------
+* H01 Customer Search Condition
+
+
+*Selection texts
+*----------------------------------------------------------
+* PA_TY D       .
+* SO_FDT D       .
+* SO_ID D       .
+
+----------------------------------------------------------------------------------
+Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2022. Sap Release 750

@@ -1,0 +1,88 @@
+*&---------------------------------------------------------------------*
+*&  Include           ZABAP_31_101_F01
+*&---------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Form  GET_SCUSTOM
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_scustom .
+  SELECT * INTO TABLE gt_scust
+      FROM scustom.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  GET_CUSTOMER_INFO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_customer_info .
+
+
+  SELECT id, name, COUNT(*), '0', street, postcode, city, country, telephone, a~custtype, email
+   FROM sbook AS a INNER JOIN scustom AS b ON a~customid = b~id
+      WHERE a~customid IN @so_id
+        AND a~custtype = @pa_ty
+        AND a~fldate IN @so_fdt
+    GROUP BY id, name, street, postcode, city, country, telephone, a~custtype, email
+    INTO TABLE @gt_data.
+
+  LOOP AT gt_data INTO gs_data.
+
+    IF gs_data-count < 10.
+      gs_data-CLASS = 'SILVER'.
+    ELSEIF gs_data-count >= 10 AND gs_data-count < 50.
+      gs_data-CLASS  = 'GOLD'.
+    ELSE.
+      gs_data-CLASS  = 'PLATINUM'.
+    ENDIF.
+
+    MODIFY gt_data FROM gs_data.
+    CLEAR: gs_data.
+  ENDLOOP.
+
+
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  SET_FCAT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM set_fcat .
+
+  GS_FCAT-FIELDNAME = 'COUNT'.
+  GS_FCAT-COLTEXT   = 'COUNT'.
+  APPEND GS_FCAT TO GT_FCAT.
+
+ CLEAR: GS_FCAT.
+  GS_FCAT-FIELDNAME = 'CLASS'.
+  GS_FCAT-COLTEXT   = 'CLASS'.
+  APPEND GS_FCAT TO GT_FCAT.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  SET_LAYOUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM set_layout .
+ GS_LAYOUT-ZEBRA = 'X'.
+  GS_LAYOUT-CWIDTH_OPT = 'X'.
+  GS_LAYOUT-SEL_MODE ='B'.
+
+ENDFORM.
+
+----------------------------------------------------------------------------------
+Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2022. Sap Release 750

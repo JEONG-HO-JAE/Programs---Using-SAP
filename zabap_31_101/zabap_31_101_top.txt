@@ -1,0 +1,45 @@
+*&---------------------------------------------------------------------*
+*&  Include           ZABAP_31_101_TOP
+*&---------------------------------------------------------------------*
+DATA: ok_code TYPE sy-ucomm.
+
+DATA: gt_scust TYPE TABLE OF scustom,
+      gs_scust LIKE LINE OF gt_scust.
+
+DATA: gt_sbook TYPE TABLE OF sbook,
+      gs_sbook LIKE LINE OF gt_sbook.
+
+*TYPES: BEGIN OF EXdata,
+*         id        TYPE scustom-id,
+*         name      TYPE scustom-name,
+*         count     TYPE int4,
+*         class     TYPE char10,
+*         street    TYPE scustom-street,
+*         postcode  TYPE scustom-postcode,
+*         city      TYPE scustom-city,
+*         country   TYPE scustom-country,
+*         telephone TYPE scustom-telephone,
+*         custtype  TYPE scustom-custtype,
+*         email     TYPE scustom-email,
+*       END OF EXdata.
+*DATA GS_DATA TYPE EXDATA.
+*DATA gt_data TYPE TABLE OF EXdata WITH EMPTY KEY.
+DATA: GT_DATA TYPE TABLE OF ZCUSTOM_31,
+      GS_DATA LIKE LINE OF GT_DATA.
+
+DATA: gt_fcat TYPE lvc_t_fcat,
+      gs_fcat TYPE lvc_s_fcat.
+
+DATA: go_cont TYPE REF TO cl_gui_custom_container,
+      go_alv  TYPE REF TO cl_gui_alv_grid.
+
+DATA: GS_LAYOUT TYPE LVC_S_LAYO.
+
+SELECTION-SCREEN BEGIN OF BLOCK blk1 WITH FRAME TITLE TEXT-h01.
+SELECT-OPTIONS: so_id FOR gs_sbook-customid OBLIGATORY.
+PARAMETERS:   pa_ty TYPE bc400_s_booking-custtype.
+SELECT-OPTIONS: so_fdt FOR gs_sbook-fldate DEFAULT '20220501' TO '20221231'.
+SELECTION-SCREEN END OF BLOCK blk1.
+
+----------------------------------------------------------------------------------
+Extracted by Mass Download version 1.5.5 - E.G.Mellodew. 1998-2022. Sap Release 750

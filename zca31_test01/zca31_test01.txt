@@ -1,0 +1,122 @@
+*&---------------------------------------------------------------------*
+*& Report ZCA31_TEST01
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zca31_test01.
+
+
+TYPES: BEGIN OF ts_result,
+         cancelled  TYPE sbook-cancelled,
+         customid   TYPE sbook-customid,
+         connid     TYPE sbook-connid,
+         fldate     TYPE sbook-fldate,
+         class      TYPE sbook-class,
+         carrid     TYPE sbook-carrid,
+         order_date TYPE sbook-order_date,
+         loccuram   TYPE sbook-loccuram,
+         loccurkey  TYPE sbook-loccurkey,
+         name       TYPE scustom-name,
+         carrname   TYPE scarr-carrname,
+       END OF ts_result.
+
+TYPES: tt_result TYPE STANDARD TABLE OF ts_result
+                 WITH NON-UNIQUE KEY customid.
+
+
+DATA gs_sbook TYPE sbook.
+DATA gt_sbook LIKE TABLE OF gs_sbook.
+
+*selection screen
+SELECT-OPTIONS s_id FOR gs_sbook-customid.
+PARAMETERS p_ctype TYPE sbook-custtype.
+SELECT-OPTIONS s_fld FOR gs_sbook-fldate.
+
+INITIALIZATION.
+  s_fld-low = '20220301'.
+  s_fld-high = '20220331'.
+  APPEND s_fld TO s_fld.
+
+AT SELECTION-SCREEN.
+  IF s_id-low IS INITIAL AND s_id-high IS INITIAL.
+    MESSAGE e004(zabap31).
+  ENDIF.
+
+START-OF-SELECTION.
+
+
+  DATA gt_result TYPE tt_result.
+  DATA gw_result LIKE LINE OF gt_result."work area
+
+
+  SELECT *
+  INTO CORRESPONDING FIELDS OF TABLE gt_result
+    FROM sbook INNER JOIN scustom
+      ON sbook~customid = scustom~id
+      INNER JOIN scarr
+      ON sbook~carrid = scarr~carrid
+   WHERE sbook~customid IN s_id
+    AND sbook~custtype = p_ctype
+    AND sbook~fldate IN s_fld
+  ORDER BY sbook~customid sbook~fldate ASCENDING.
+
+
+
+  DATA : gs_icon  TYPE  icon.
+  DATA : gs_ex TYPE sbook-customid.
+  LOOP AT gt_result INTO gw_result.
+    WRITE:/.
+*    IF gw_result-cancelled = 'X'.
+*      WRITE:'D'.
+*    ENDIF.
+    IF gs_ex IS INITIAL.
+      WRITE: gw_result-customid, gw_result-name,gw_result-carrid,
+          gw_result-carrname, gw_result-connid, gw_result-fldate.
+
+      IF gw_result-class = 'C'.
+        WRITE: 'BUSI'(001).
+      ELSEIF gw_result-class = 'W'.
+        WRITE: 'ECON'(002).
+      ELSE.
+        WRITE: 'FIRST'(003).
+      ENDIF.
+      WRITE: gw_result-order_date, gw_result-loccuram, gw_result-loccurkey.
+    ELSEIF gs_ex <> gw_result-customid.
+      WRITE:/.
+    ELSE.
+      WRITE: gw_result-customid, gw_result-name,gw_result-carrid,
+          gw_result-carrname, gw_result-connid, gw_result-fldate.
+
+      IF gw_result-class = 'C'.
+        WRITE: 'BUSI'(001).
+      ELSEIF gw_result-class = 'W'.
+        WRITE: 'ECON'(002).
+      ELSE.
+        WRITE: 'FIRST'(003).
+      ENDIF.
+      WRITE: gw_result-order_date, gw_result-loccuram, gw_result-loccurkey.
+    ENDIF.
+    gs_ex = gw_result-customid.
+  ENDLOOP.
+
+
+
+*  cancelled
+*         customid
+*         connid
+*         fldate
+*         class
+*         carrid
+*         order_date
+*         loccuram
+*         loccurkey
+*         name
+*         carrname
+
+
+
+
+
+
+
+
